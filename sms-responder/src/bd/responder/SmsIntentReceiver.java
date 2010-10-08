@@ -14,7 +14,7 @@ public class SmsIntentReceiver extends BroadcastReceiver
 	{
 		String sendData = "Message Recieved";
 		SmsManager mng = SmsManager.getDefault();
-		PendingIntent dummyEvent = PendingIntent.getBroadcast(context, 0, new Intent("com.devx.SMSExample.IGNORE_ME"), 0);
+		PendingIntent dummyEvent = PendingIntent.getBroadcast(context, 0, new Intent("bd.responder.IGNORE_ME"), 0);
 		
 		String addr = inMessage.getOriginatingAddress();
 		
@@ -58,7 +58,7 @@ public class SmsIntentReceiver extends BroadcastReceiver
 			String message = msg[i].getDisplayMessageBody();
 			if(message != null && message.length() > 0)
 			{
-				if(message.startsWith("test"))
+				if(message.startsWith("Test"))
 				{
 					sendMessage(context, intent, msg[i]);
 				}
