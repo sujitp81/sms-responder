@@ -15,13 +15,19 @@ public class SMSResponder extends Activity {
         setContentView(R.layout.main);
         DBAdapter db = new DBAdapter(this);
         
+        
         byte[] settings = new byte[1];
         String FILENAME = "RRSettings";
         
         CheckBox activeButton = (CheckBox)findViewById(R.id.CheckBox01);
         
         TextView test = (TextView)findViewById(R.id.TextView01);
+		TextView profile = (TextView)findViewById(R.id.TextView02);
 		
+		db.open();
+		String[] profiles = db.getProfiles();
+		
+		//profile.setText(profiles[0]);
 		
 		activeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{

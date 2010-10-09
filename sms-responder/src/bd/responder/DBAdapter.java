@@ -102,7 +102,16 @@ public class DBAdapter
     {
     	ArrayList<String> profilesList = new ArrayList<String>();
     	Cursor cursor = db.query("profiles", new String[] {"profile"}, null, null, null, null, null);
-    	String[] profiles= (String[])profilesList.toArray();
+    	do
+    	{
+    		profilesList.add(cursor.getString(0));
+    	} while (cursor.moveToNext());
+    	String[] profiles = (String[])profilesList.toArray();
     	return profiles;
+    }
+    
+    public String sayHi()
+    {
+    	return "hi";
     }
 }
