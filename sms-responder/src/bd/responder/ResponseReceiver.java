@@ -1,5 +1,8 @@
 package bd.responder;
 
+import java.io.*;
+
+import android.content.*;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,7 +11,7 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 
-public class SmsIntentReceiver extends BroadcastReceiver 
+public class ResponseReceiver extends BroadcastReceiver 
 {
 	private void sendMessage(Context context, Intent intent, SmsMessage inMessage)
 	{
@@ -44,23 +47,52 @@ public class SmsIntentReceiver extends BroadcastReceiver
 		}
 		return retMsgs;
 	}
+	
 	public void onReceive(Context context, Intent intent) 
 	{
-		
+		String FILENAME = "RRSettings";
+		Boolean on = false;
 		if(!intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED"))
 		{
 			return;
 		}
-		SmsMessage msg[] = getMessagesFromIntent(intent);
 		
-		for(int i=0; i < msg.length; i++)
-		{
-			String message = msg[i].getDisplayMessageBody();
-			if(message != null && message.length() > 0)
+		try{
+			FileInputStream fis = context.openFileInput(FILENAME);
+			byte[] settings = new byte[1];
+			fis.read(settings);
+			if(settings[0] == '1')
 			{
-				if(message.startsWith("Test"))
+				on = true;
+			}
+			
+		}catch(Exception e)
+		{
+			try{
+				FileOutputStream fos = context.openFileOutput(FILENAME, 0);
+				String string = "1";
+				fos.write(string.getBytes());
+				fos.close();
+				on = true;
+			}catch(Exception Ex)
+			{
+				
+			}			
+		}
+		
+		if(on)
+		{
+			SmsMessage msg[] = getMessagesFromIntent(intent);
+			
+			for(int i=0; i < msg.length; i++)
+			{
+				String message = msg[i].getDisplayMessageBody();
+				if(message != null && message.length() > 0)
 				{
-					sendMessage(context, intent, msg[i]);
+					if(message.startsWith("Test"))
+					{
+						sendMessage(context, intent, msg[i]);
+					}
 				}
 			}
 		}

@@ -9,7 +9,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-	    <receiver android:name=".SmsIntentReceiver"
+	    <receiver android:name="ResponseReceiver"
 				android:enabled="true">
 				<intent-filter>
 					<action android:name="android.provider.Telephony.SMS_RECEIVED" />
