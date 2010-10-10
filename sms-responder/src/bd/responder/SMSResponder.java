@@ -38,26 +38,20 @@ public class SMSResponder extends Activity {
 			}
 		});
 		
-		loadSettings(db, settings);
-		test.setText(settings.get(0));
-		/*if(settings.get(1).equals("1"))
+		settings = db.getSettings();
+		if(settings.get(1).equals("1"))
 		{
-			//test.setText("Active");
+			test.setText("Active");
 			activeButton.setChecked(true);
 		}
 		else
 		{
-			//test.setText("Inactive");
+			test.setText("Inactive");
 			activeButton.setChecked(false);
-		}*/
+		}
 		db.close();
     }
     
-    private void loadSettings(DBAdapter db, ArrayList<String> settings)
-    {
-    	settings = db.getSettings();
-    }
-
 	private void saveSettings(DBAdapter db, ArrayList<String> settings)
 	{
 

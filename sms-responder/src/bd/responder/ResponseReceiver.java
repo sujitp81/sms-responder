@@ -32,19 +32,13 @@ public class ResponseReceiver extends BroadcastReceiver
 	{
 		SmsMessage retMsgs[] = null;
 		Bundle bdl = intent.getExtras();
-		try{
-			Object pdus[] = (Object [])bdl.get("pdus");
-			retMsgs = new SmsMessage[pdus.length];
-			for(int n=0; n < pdus.length; n++)
-			{
-				byte[] byteData = (byte[])pdus[n];
-				retMsgs[n] = SmsMessage.createFromPdu(byteData);
-			}	
-			
-		}catch(Exception e)
+		Object pdus[] = (Object [])bdl.get("pdus");
+		retMsgs = new SmsMessage[pdus.length];
+		for(int n=0; n < pdus.length; n++)
 		{
-			
-		}
+			byte[] byteData = (byte[])pdus[n];
+			retMsgs[n] = SmsMessage.createFromPdu(byteData);
+		}	
 		return retMsgs;
 	}
 	

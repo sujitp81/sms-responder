@@ -128,16 +128,21 @@ public class DBAdapter
     {
     	Log.w(TAG,"=================Get Settings=================");
     	ArrayList<String> settings = new ArrayList<String>();
-    	Cursor cursor = db.query("settings", new String[] {"setting","value"}, null, null, null, null, null);
-    	if (cursor.moveToFirst())
-        {
-    		Log.w(TAG,"=================STARTING READ=================");
-    		Log.w(TAG, cursor.getString(0));
-            do {
-            	settings.add(cursor.getString(0));
-            	settings.add(cursor.getString(1));
-            } while (cursor.moveToNext());
-        }
+    	try{
+	    	Cursor cursor = db.query("settings", new String[] {"setting","value"}, null, null, null, null, null);
+	    	if (cursor.moveToFirst())
+	        {
+	    		Log.w(TAG,"=================STARTING READ=================");
+	    		Log.w(TAG, cursor.getString(0));
+	            do {
+	            	settings.add(cursor.getString(0));
+	            	settings.add(cursor.getString(1));
+	            } while (cursor.moveToNext());
+	        }
+    	}catch(Exception e)
+    	{
+    		settings.add(e.toString());
+    	}
 
     	return settings;    	
     }
