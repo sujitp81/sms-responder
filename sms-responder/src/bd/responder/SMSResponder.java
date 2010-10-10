@@ -1,6 +1,7 @@
 package bd.responder;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,8 +17,7 @@ public class SMSResponder extends Activity {
         DBAdapter db = new DBAdapter(this);
         
         
-        byte[] settings = new byte[1];
-        String FILENAME = "RRSettings";
+        ArrayList<String> settings = new ArrayList<String>();
         
         CheckBox activeButton = (CheckBox)findViewById(R.id.CheckBox01);
         
@@ -25,9 +25,9 @@ public class SMSResponder extends Activity {
 		TextView profile = (TextView)findViewById(R.id.TextView02);
 		
 		db.open();
-		String[] profiles = db.getProfiles();
+		ArrayList<String> profiles = db.getProfiles();
 		
-		//profile.setText(profiles[0]);
+		profile.setText(profiles.get(0));
 		
 		activeButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
@@ -38,8 +38,9 @@ public class SMSResponder extends Activity {
 			}
 		});
 		
-		loadSettings(FILENAME, settings);
-		if(settings[0] == '1')
+		loadSettings(db, settings);
+		test.setText(settings.get(0));
+		/*if(settings.get(1).equals("1"))
 		{
 			//test.setText("Active");
 			activeButton.setChecked(true);
@@ -48,36 +49,17 @@ public class SMSResponder extends Activity {
 		{
 			//test.setText("Inactive");
 			activeButton.setChecked(false);
-		}
-
+		}*/
+		db.close();
     }
     
-    private void loadSettings(String FILENAME, byte[] settings)
+    private void loadSettings(DBAdapter db, ArrayList<String> settings)
     {
-    	TextView test = (TextView)findViewById(R.id.TextView01);
-    	try{
-			FileInputStream fis = openFileInput(FILENAME);
-			fis.read(settings);
-			fis.close();
-			test.setText("Loaded");
-		}catch(Exception e)
-		{
-			settings[0] = '1';
-			saveSettings(FILENAME, settings);
-		}
-	}
+    	settings = db.getSettings();
+    }
 
-	private void saveSettings(String FILENAME, byte[] settings)
+	private void saveSettings(DBAdapter db, ArrayList<String> settings)
 	{
-		TextView test = (TextView)findViewById(R.id.TextView01);
-		try{
-			FileOutputStream fos = openFileOutput(FILENAME, 0);
-			fos.write(settings);
-			fos.close();
-			test.setText("Saved");
-		}catch(Exception e)
-		{
-			test.setText("Error");
-		}
+
 	}
-	}
+}

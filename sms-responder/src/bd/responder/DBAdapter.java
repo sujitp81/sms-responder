@@ -9,18 +9,21 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DBAdapter 
 {
-    //private static final String TAG = "DBAdapter";
-    
+	private static final String TAG = "DBAdapter";
+	
     private static final String DATABASE_NAME = "autoresponse";
     private static final int DATABASE_VERSION = 1;
-    private static final String PROFILE_TEMPLATE = " (responsetype text not null, id text, response text);";
-    private static final String DATABASE_CREATE = 
-    	"create table settings (setting text not null, value text);" +
-    	"create table profiles (_id integer primary key autoincrement, profile text not null);" +
-    	"create table default" + PROFILE_TEMPLATE;
+    private static final String PROFILE_TEMPLATE = "(responsetype text not null, name text, response text)";
+    private static final String DATABASE_CREATE1 = 
+    	"create table settings (setting text not null, value text);";
+    private static final String DATABASE_CREATE2 =	
+    	"create table profiles (_id integer primary key autoincrement, profile text not null);";
+    private static final String DATABASE_CREATE3 =
+    	"create table new " + PROFILE_TEMPLATE + ";";
         
     private final Context context; 
     
@@ -29,7 +32,7 @@ public class DBAdapter
 
     public DBAdapter(Context ctx) 
     {
-        this.context = ctx;
+    	this.context = ctx;
         DBHelper = new DatabaseHelper(context);
     }
         
@@ -43,7 +46,10 @@ public class DBAdapter
         @Override
         public void onCreate(SQLiteDatabase db) 
         {
-            db.execSQL(DATABASE_CREATE);
+        	Log.w(TAG, "DB Creation started");
+        	db.execSQL(DATABASE_CREATE1);
+        	db.execSQL(DATABASE_CREATE2);
+        	db.execSQL(DATABASE_CREATE3);
             
             ContentValues initialValues = new ContentValues();
             initialValues.put("setting", "enabled");
@@ -52,17 +58,18 @@ public class DBAdapter
             
             initialValues.clear();
             initialValues.put("setting", "active");
-            initialValues.put("value", "0");
+            initialValues.put("value", "new");
             db.insert("settings", null, initialValues);
         	
             initialValues.clear();
             initialValues.put("responsetype", "general");
-            initialValues.put("value", "I am unable to respond at this time.");
-            db.insert("default", null, initialValues);
+            initialValues.put("response", "I am unable to respond at this time.");
+            db.insert("new", null, initialValues);
 
             initialValues.clear();
-            initialValues.put("profile", "default");
+            initialValues.put("profile", "new");
             db.insert("profiles", null, initialValues);
+            Log.w(TAG, "DB Creation finished");
         }
 
         @Override
@@ -98,20 +105,40 @@ public class DBAdapter
     }
     
     //---returns a list of all available profiles---
-    public String[] getProfiles()
+    public ArrayList<String> getProfiles()
     {
     	ArrayList<String> profilesList = new ArrayList<String>();
     	Cursor cursor = db.query("profiles", new String[] {"profile"}, null, null, null, null, null);
-    	do
-    	{
-    		profilesList.add(cursor.getString(0));
-    	} while (cursor.moveToNext());
-    	String[] profiles = (String[])profilesList.toArray();
-    	return profiles;
+    	if (cursor.moveToFirst())
+        {
+            do {          
+            	profilesList.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+
+    	return profilesList;
     }
     
     public String sayHi()
     {
     	return "hi";
+    }
+    
+    public ArrayList<String> getSettings()
+    {
+    	Log.w(TAG,"=================Get Settings=================");
+    	ArrayList<String> settings = new ArrayList<String>();
+    	Cursor cursor = db.query("settings", new String[] {"setting","value"}, null, null, null, null, null);
+    	if (cursor.moveToFirst())
+        {
+    		Log.w(TAG,"=================STARTING READ=================");
+    		Log.w(TAG, cursor.getString(0));
+            do {
+            	settings.add(cursor.getString(0));
+            	settings.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+    	return settings;    	
     }
 }
