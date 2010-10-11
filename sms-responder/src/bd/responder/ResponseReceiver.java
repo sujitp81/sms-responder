@@ -1,6 +1,7 @@
 package bd.responder;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import android.content.*;
 import android.app.PendingIntent;
@@ -13,9 +14,11 @@ import android.telephony.SmsMessage;
 
 public class ResponseReceiver extends BroadcastReceiver 
 {
+	ArrayList<String> settings;
+	
 	private void sendMessage(Context context, Intent intent, SmsMessage inMessage)
 	{
-		String sendData = "Message Recieved";
+		String sendData = getMessage(context);
 		SmsManager mng = SmsManager.getDefault();
 		PendingIntent dummyEvent = PendingIntent.getBroadcast(context, 0, new Intent("bd.responder.IGNORE_ME"), 0);
 		
@@ -26,6 +29,16 @@ public class ResponseReceiver extends BroadcastReceiver
 		}catch(Exception e){
 			
 		}
+	}
+	
+	private String getMessage(Context context)
+	{
+		DBAdapter db = new DBAdapter(context);
+		String message = "failed";
+		db.open();
+		message = db.getMessage(settings.get(3),"general");
+		db.close();
+		return message;
 	}
 	
 	private SmsMessage[] getMessagesFromIntent(Intent intent)
@@ -44,37 +57,18 @@ public class ResponseReceiver extends BroadcastReceiver
 	
 	public void onReceive(Context context, Intent intent) 
 	{
-		String FILENAME = "RRSettings";
-		Boolean on = false;
 		if(!intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED"))
 		{
 			return;
 		}
 		
-		try{
-			FileInputStream fis = context.openFileInput(FILENAME);
-			byte[] settings = new byte[1];
-			fis.read(settings);
-			if(settings[0] == '1')
-			{
-				on = true;
-			}
-			
-		}catch(Exception e)
-		{
-			try{
-				FileOutputStream fos = context.openFileOutput(FILENAME, 0);
-				String string = "1";
-				fos.write(string.getBytes());
-				fos.close();
-				on = true;
-			}catch(Exception Ex)
-			{
-				
-			}			
-		}
+		DBAdapter db = new DBAdapter(context);
 		
-		if(on)
+		db.open();
+		settings = db.getSettings();
+		db.close();
+
+		if(settings.get(1).equals("1"))
 		{
 			SmsMessage msg[] = getMessagesFromIntent(intent);
 			
@@ -83,10 +77,7 @@ public class ResponseReceiver extends BroadcastReceiver
 				String message = msg[i].getDisplayMessageBody();
 				if(message != null && message.length() > 0)
 				{
-					if(message.startsWith("Test"))
-					{
 						sendMessage(context, intent, msg[i]);
-					}
 				}
 			}
 		}

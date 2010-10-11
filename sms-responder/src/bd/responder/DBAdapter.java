@@ -63,6 +63,7 @@ public class DBAdapter
         	
             initialValues.clear();
             initialValues.put("responsetype", "general");
+            initialValues.put("name", "");
             initialValues.put("response", "I am unable to respond at this time.");
             db.insert("new", null, initialValues);
 
@@ -126,14 +127,11 @@ public class DBAdapter
     
     public ArrayList<String> getSettings()
     {
-    	Log.w(TAG,"=================Get Settings=================");
     	ArrayList<String> settings = new ArrayList<String>();
     	try{
 	    	Cursor cursor = db.query("settings", new String[] {"setting","value"}, null, null, null, null, null);
 	    	if (cursor.moveToFirst())
 	        {
-	    		Log.w(TAG,"=================STARTING READ=================");
-	    		Log.w(TAG, cursor.getString(0));
 	            do {
 	            	settings.add(cursor.getString(0));
 	            	settings.add(cursor.getString(1));
@@ -145,5 +143,57 @@ public class DBAdapter
     	}
 
     	return settings;    	
+    }
+    
+    public String getMessage(String profile, String type, String name)
+    {
+    	String response = "";
+    	Cursor cursor = db.query(profile, new String[] {"response"}, "responsetype=\"" + type + "\" and name=\"" + name + "\"", null, null, null, null);
+		if(cursor.moveToFirst())
+		{
+			response = cursor.getString(0);
+		}
+    	return response;
+    }
+    
+    public String getMessage(String profile, String type)
+    {
+    	return getMessage(profile, type, "");
+    }
+    
+    public void saveMessage(String profile, String type, String message, String name)
+    {
+    	ContentValues cv = new ContentValues();
+    	cv.put("responsetype", type);
+    	cv.put("name", name);
+    	cv.put("message", message);
+    	try
+    	{
+    		db.delete(profile, "responsetype = \"" + type + "\" and name = \"" + name + "\"", null);
+    	}catch(Exception e)
+    	{
+    		
+    	}
+    	db.insert(profile, null, cv);
+    }
+    
+    public void saveMessage(String profile, String type, String message)
+    {
+    	saveMessage(profile,type,message,"");
+    }
+    
+    public void saveSettings(ArrayList<String> settings)
+    {
+    	int location = 0;
+    	ContentValues cv = new ContentValues();
+    	while(location < settings.size())
+    	{
+       		cv.put("setting", settings.get(location));
+       		cv.put("value", settings.get(location + 1));
+       		
+       		db.delete("settings", "setting=?" , new String[] {settings.get(location)});
+       		db.insert("settings", null, cv);
+       		location+=2;
+    	}
     }
 }
