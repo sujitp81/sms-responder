@@ -1,6 +1,8 @@
-package bd.responder;
+package com.bd.responder;
 
 import java.util.ArrayList;
+
+import com.bd.responder.R;
 
 import android.app.Activity;
 import android.os.Bundle;
