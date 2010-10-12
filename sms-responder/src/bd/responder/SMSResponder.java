@@ -1,10 +1,10 @@
 package bd.responder;
 
-import java.io.*;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.widget.*;
 
@@ -14,6 +14,7 @@ public class SMSResponder extends Activity {
 	
 	ArrayList<String> settings;
 	DBAdapter db = new DBAdapter(this);
+	String active = "";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,9 +25,8 @@ public class SMSResponder extends Activity {
         
         Button saveButton = (Button)findViewById(R.id.Button01);
         
-        TextView test = (TextView)findViewById(R.id.TextView01);
-		TextView profile = (TextView)findViewById(R.id.TextView02);
-
+        EditText general = (EditText)findViewById(R.id.EditText01);
+        
 		activeCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			@Override
@@ -45,18 +45,21 @@ public class SMSResponder extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				saveSettings();				
+				saveSettings();			
+				Toast.makeText(getApplicationContext(),"settings saved",Toast.LENGTH_LONG).show();
 			}
 			
 		});
-		
-		db.open();
-		ArrayList<String> profiles = db.getProfiles();
-		
-		profile.setText(profiles.get(0));
 
+		db.open();
+		//ArrayList<String> profiles = db.getProfiles();
+		
 		settings = db.getSettings();
-		test.setText(settings.get(0) + " " + settings.get(1));
+		active = settings.get(3);
+		general.setText(db.getMessage(active, "general"));
+		Editable thingy = general.getText();
+		general.setText(thingy.toString());
+		
 		db.close();
 		if(settings.get(1).equals("1"))
 		{
@@ -71,9 +74,13 @@ public class SMSResponder extends Activity {
     
 	private void saveSettings()
 	{
-		TextView test = (TextView)findViewById(R.id.TextView01);
 		db.open();
 		db.saveSettings(settings);
+		
+		EditText general = (EditText)findViewById(R.id.EditText01);
+		Editable seriously = general.getText();
+		
+		db.saveMessage(active, "general", seriously.toString());
 		db.close();
 	}
 }

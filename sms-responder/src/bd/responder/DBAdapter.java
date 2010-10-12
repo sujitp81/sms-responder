@@ -9,7 +9,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 public class DBAdapter 
 {
@@ -166,7 +165,7 @@ public class DBAdapter
     	ContentValues cv = new ContentValues();
     	cv.put("responsetype", type);
     	cv.put("name", name);
-    	cv.put("message", message);
+    	cv.put("response", message);
     	try
     	{
     		db.delete(profile, "responsetype = \"" + type + "\" and name = \"" + name + "\"", null);
@@ -174,7 +173,9 @@ public class DBAdapter
     	{
     		
     	}
+    	Log.w(TAG, "===============INSERTING==============");
     	db.insert(profile, null, cv);
+    	Log.w(TAG, "===============DONE INSERTING==============");
     }
     
     public void saveMessage(String profile, String type, String message)

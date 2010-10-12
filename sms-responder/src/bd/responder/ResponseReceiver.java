@@ -1,9 +1,7 @@
 package bd.responder;
 
-import java.io.*;
 import java.util.ArrayList;
 
-import android.content.*;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -61,7 +59,6 @@ public class ResponseReceiver extends BroadcastReceiver
 		{
 			return;
 		}
-		
 		DBAdapter db = new DBAdapter(context);
 		
 		db.open();
