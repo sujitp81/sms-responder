@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import com.bd.responder.R;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
@@ -36,7 +34,6 @@ public class SMSResponder extends Activity {
 
        	@Override
        	public void onItemClick(AdapterView a, View v, int position, long id) {
-       		AlertDialog.Builder adb=new AlertDialog.Builder(SMSResponder.this);
        		String itemText = (String)profList.getItemAtPosition(position);
        		if(itemText.equals(settings.get(1)))
        		{
@@ -107,7 +104,6 @@ public class SMSResponder extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
       AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-      int menuItemIndex = item.getItemId();
       String menuItemName = item.getTitle().toString();
       String listItemName = profilesArray[info.position];
       if(menuItemName.equals("Deactivate"))
