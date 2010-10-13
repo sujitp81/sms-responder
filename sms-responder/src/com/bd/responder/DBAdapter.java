@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DBAdapter 
 {
@@ -22,7 +23,7 @@ public class DBAdapter
     private static final String DATABASE_CREATE2 =	
     	"create table profiles (_id integer primary key autoincrement, profile text not null);";
     private static final String DATABASE_CREATE3 =
-    	"create table new " + PROFILE_TEMPLATE + ";";
+    	"create table profile_default " + PROFILE_TEMPLATE + ";";
         
     private final Context context; 
     
@@ -45,29 +46,23 @@ public class DBAdapter
         @Override
         public void onCreate(SQLiteDatabase db) 
         {
-        	Log.w(TAG, "DB Creation started");
         	db.execSQL(DATABASE_CREATE1);
         	db.execSQL(DATABASE_CREATE2);
         	db.execSQL(DATABASE_CREATE3);
             
             ContentValues initialValues = new ContentValues();
-            initialValues.put("setting", "enabled");
-            initialValues.put("value", "1");
-            db.insert("settings", null, initialValues);
-            
-            initialValues.clear();
             initialValues.put("setting", "active");
-            initialValues.put("value", "new");
+            initialValues.put("value", "default");
             db.insert("settings", null, initialValues);
         	
             initialValues.clear();
             initialValues.put("responsetype", "general");
             initialValues.put("name", "");
             initialValues.put("response", "I am unable to respond at this time.");
-            db.insert("new", null, initialValues);
+            db.insert("profile_default", null, initialValues);
 
             initialValues.clear();
-            initialValues.put("profile", "new");
+            initialValues.put("profile", "default");
             db.insert("profiles", null, initialValues);
             Log.w(TAG, "DB Creation finished");
         }
@@ -84,7 +79,7 @@ public class DBAdapter
     //---creates a new profile from PROFILE_TEMPLATE
     public void createProfile(String profile)
     {
-    	db.execSQL("create table " + profile + PROFILE_TEMPLATE);
+    	db.execSQL("create table profile_" + profile.trim() + PROFILE_TEMPLATE);
         ContentValues initialValues = new ContentValues();
         initialValues.put("responsetype", "general");
         initialValues.put("value", "I am unable to respond at this time.");
@@ -147,7 +142,7 @@ public class DBAdapter
     public String getMessage(String profile, String type, String name)
     {
     	String response = "";
-    	Cursor cursor = db.query(profile, new String[] {"response"}, "responsetype=\"" + type + "\" and name=\"" + name + "\"", null, null, null, null);
+    	Cursor cursor = db.query("profile_" + profile, new String[] {"response"}, "responsetype=\"" + type + "\" and name=\"" + name + "\"", null, null, null, null);
 		if(cursor.moveToFirst())
 		{
 			response = cursor.getString(0);
@@ -168,14 +163,12 @@ public class DBAdapter
     	cv.put("response", message);
     	try
     	{
-    		db.delete(profile, "responsetype = \"" + type + "\" and name = \"" + name + "\"", null);
+    		db.delete("profile_" + profile, "responsetype = \"" + type + "\" and name = \"" + name + "\"", null);
     	}catch(Exception e)
     	{
     		
     	}
-    	Log.w(TAG, "===============INSERTING==============");
-    	db.insert(profile, null, cv);
-    	Log.w(TAG, "===============DONE INSERTING==============");
+    	db.insert("profile_" + profile, null, cv);
     }
     
     public void saveMessage(String profile, String type, String message)
@@ -187,12 +180,12 @@ public class DBAdapter
     {
     	int location = 0;
     	ContentValues cv = new ContentValues();
-    	while(location < settings.size())
+    	while(location < settings.size()) 
     	{
        		cv.put("setting", settings.get(location));
        		cv.put("value", settings.get(location + 1));
        		
-       		db.delete("settings", "setting=?" , new String[] {settings.get(location)});
+       		db.delete("settings", "setting=\"" + settings.get(location) + "\"", null);
        		db.insert("settings", null, cv);
        		location+=2;
     	}

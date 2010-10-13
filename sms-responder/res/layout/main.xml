@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"><CheckBox android:id="@+id/CheckBox01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Active"></CheckBox>
-<Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/Button01" android:text="Save" android:layout_below="@+id/EditText01"></Button>
-<EditText android:id="@+id/EditText01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@+id/CheckBox01" android:minWidth="300px" android:maxWidth="300px"></EditText>
+<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+<ListView android:id="@+id/ListView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@+id/RelativeLayout01">
+</ListView>
+
+<EditText android:text="@+id/EditText01" android:id="@+id/EditText01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/ListView01"></EditText>
 </RelativeLayout>

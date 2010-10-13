@@ -65,7 +65,7 @@ public class ResponseReceiver extends BroadcastReceiver
 		settings = db.getSettings();
 		db.close();
 
-		if(settings.get(1).equals("1"))
+		if(!settings.get(1).equals(""))
 		{
 			SmsMessage msg[] = getMessagesFromIntent(intent);
 			
