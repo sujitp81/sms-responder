@@ -2,13 +2,13 @@ package com.bd.responder;
 
 import java.util.ArrayList;
 
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+//import android.widget.Toast;
 
 public class ResponseReceiver extends BroadcastReceiver 
 {
@@ -18,14 +18,14 @@ public class ResponseReceiver extends BroadcastReceiver
 	{
 		String sendData = getMessage(context);
 		SmsManager mng = SmsManager.getDefault();
-		PendingIntent dummyEvent = PendingIntent.getBroadcast(context, 0, new Intent("bd.responder.IGNORE_ME"), 0);
+//		PendingIntent dummyEvent = PendingIntent.getBroadcast(context, 0, new Intent("bd.responder.IGNORE_ME"), 0);
 		
 		String addr = inMessage.getOriginatingAddress();
 		
 		try{
-			mng.sendTextMessage(addr, null, sendData, dummyEvent, dummyEvent);
+			mng.sendTextMessage(addr, null, sendData, null, null);
 		}catch(Exception e){
-			
+
 		}
 	}
 	
@@ -34,7 +34,7 @@ public class ResponseReceiver extends BroadcastReceiver
 		DBAdapter db = new DBAdapter(context);
 		String message = "failed";
 		db.open();
-		message = db.getMessage(settings.get(3),"general");
+		message = db.getMessage(settings.get(1),"general");
 		db.close();
 		return message;
 	}
@@ -68,7 +68,7 @@ public class ResponseReceiver extends BroadcastReceiver
 		if(!settings.get(1).equals(""))
 		{
 			SmsMessage msg[] = getMessagesFromIntent(intent);
-			
+
 			for(int i=0; i < msg.length; i++)
 			{
 				String message = msg[i].getDisplayMessageBody();

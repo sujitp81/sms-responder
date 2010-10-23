@@ -87,6 +87,7 @@ public class SMSResponder extends Activity {
         menu.setHeaderTitle(profilesArray[info.position]);
         String[] menuItems = new String[1];
         //menuItems[1] = "Edit";
+    	//menuItems[2] = "Delete";
         for (int i = 0; i<menuItems.length; i++) {
         	if(profilesArray[info.position].equals(settings.get(1)))
         	{
@@ -119,6 +120,9 @@ public class SMSResponder extends Activity {
       }else if(menuItemName.equals("Edit"))
       {
     	  //Load profile into edit mode
+      }else if(menuItemName.equals("Delete"))
+      {
+    	  //Delete profile
       }
       return true;
     }
