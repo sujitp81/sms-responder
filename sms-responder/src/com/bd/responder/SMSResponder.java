@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.bd.responder.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -103,6 +104,35 @@ public class SMSResponder extends Activity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.profiles_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+        case R.id.new_profile:
+            
+            return true;
+        case R.id.settings:
+            
+            return true;
+        case R.id.about:
+        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        	builder.setMessage("Developed by Kindar_Conrath")
+        	       .setCancelable(false)
+        	       ;
+        	AlertDialog alert = builder.create();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
       AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
       String menuItemName = item.getTitle().toString();
@@ -130,7 +160,6 @@ public class SMSResponder extends Activity {
 	private void saveProfile()
 	{
 		EditText general = (EditText)findViewById(R.id.EditText01);
-		
 		db.open();
 		db.saveSettings(settings);
 		db.saveMessage("default", "general", general.getText().toString());
