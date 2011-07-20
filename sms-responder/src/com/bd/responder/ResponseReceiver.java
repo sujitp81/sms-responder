@@ -3,8 +3,10 @@ package com.bd.responder;
 import java.util.ArrayList;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -24,9 +26,23 @@ public class ResponseReceiver extends BroadcastReceiver
 		
 		try{
 			mng.sendTextMessage(addr, null, sendData, null, null);
+			if(true)
+				writeToSent(context,addr,sendData);
 		}catch(Exception e){
 
 		}
+	}
+	
+	private void writeToSent(Context context, String addr, String sendData)
+	{
+		ContentValues values = new ContentValues();
+		values.put("address", addr);
+		values.put("body", sendData);
+		values.put("date", new Long(System.currentTimeMillis()) + 5);
+        values.put("type", 2);
+        values.put("thread_id", 1);
+        values.put("read", 1);
+		context.getContentResolver().insert(Uri.parse("content://sms/sent"), values);
 	}
 	
 	private String getMessage(Context context)
@@ -74,6 +90,7 @@ public class ResponseReceiver extends BroadcastReceiver
 				String message = msg[i].getDisplayMessageBody();
 				if(message != null && message.length() > 0)
 				{
+					if(message.toLowerCase().contains("test"))
 						sendMessage(context, intent, msg[i]);
 				}
 			}

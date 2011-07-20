@@ -6,6 +6,7 @@ import com.bd.responder.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -115,17 +116,42 @@ public class SMSResponder extends Activity {
         // Handle item selection
         switch (item.getItemId()) {
         case R.id.new_profile:
-            
+        	final EditText profileName = new EditText(this);
+        	new AlertDialog.Builder(this)
+        	       .setMessage("New Profile Name:")
+        	       .setTitle("Create Profile")
+        	       .setCancelable(true)
+        	       .setView(profileName)
+        	       .setPositiveButton("Create", new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						db.open();
+						db.createProfile(profileName.getText().toString());
+						db.close();
+						return;
+					}})
+        		   .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						return;						
+					}})
+					.show();        
             return true;
         case R.id.settings:
             
             return true;
         case R.id.about:
-        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        	builder.setMessage("Developed by Kindar_Conrath")
-        	       .setCancelable(false)
-        	       ;
-        	AlertDialog alert = builder.create();
+        	new AlertDialog.Builder(this)
+        	       .setMessage("Developed by Kindar_Conrath")
+        	       .setTitle("About")
+        	       .setCancelable(true)
+        	       .setNeutralButton("Ok", new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						return;
+					}})
+        	        .show();
             return true;
         default:
             return super.onOptionsItemSelected(item);
